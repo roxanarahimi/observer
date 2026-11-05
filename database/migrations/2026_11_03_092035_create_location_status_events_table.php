@@ -13,23 +13,75 @@ return new class extends Migration
     {
         Schema::create('location_status_events', function (Blueprint $table) {
             $table->id();
+
             $table->string('client_uuid')->unique();
-            $table->bigInteger('device_id');
-            $table->bigInteger('user_id');
-            $table->enum('event_type',[ 'LOCATION_DISABLED', 'LOCATION_ENABLED', 'LOCATION_PERMISSION_DENIED_AT_SETUP', 'LOCATION_PERMISSION_REVOKED', 'BACKGROUND_LOCATION_PERMISSION_REVOKED', 'LOCATION_PERMISSION_STATE_CHANGED', 'LOCATION_PERMISSION_RESTORED'])->default('LOCATION_ENABLED');///
-            $table->enum('category',['LOCATION_SETTING', 'FOREGROUND_LOCATION', 'BACKGROUND_LOCATION']);///
-            $table->enum('previous_state',['ENABLED', 'DISABLED', 'PRECISE', 'APPROXIMATE', 'DENIED', 'GRANTED', 'NOT_APPLICABLE',]);
-            $table->enum('current_state',['ENABLED', 'DISABLED', 'PRECISE', 'APPROXIMATE', 'DENIED', 'GRANTED', 'NOT_APPLICABLE',]);
+
+            $table->foreignId('device_id')
+                ->constrained('devices')
+                ->cascadeOnDelete();
+
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
+            $table->enum('event_type', [
+                'LOCATION_DISABLED',
+                'LOCATION_ENABLED',
+                'LOCATION_PERMISSION_DENIED_AT_SETUP',
+                'LOCATION_PERMISSION_REVOKED',
+                'BACKGROUND_LOCATION_PERMISSION_REVOKED',
+                'LOCATION_PERMISSION_STATE_CHANGED',
+                'LOCATION_PERMISSION_RESTORED',
+            ])->default('LOCATION_ENABLED');
+
+            $table->enum('category', [
+                'LOCATION_SETTING',
+                'FOREGROUND_LOCATION',
+                'BACKGROUND_LOCATION',
+            ]);
+
+            $table->enum('previous_state', [
+                'ENABLED',
+                'DISABLED',
+                'PRECISE',
+                'APPROXIMATE',
+                'DENIED',
+                'GRANTED',
+                'NOT_APPLICABLE',
+            ]);
+
+            $table->enum('current_state', [
+                'ENABLED',
+                'DISABLED',
+                'PRECISE',
+                'APPROXIMATE',
+                'DENIED',
+                'GRANTED',
+                'NOT_APPLICABLE',
+            ]);
+
             $table->bigInteger('detected_at');
             $table->string('detected_at_utc');
             $table->bigInteger('previous_observed_at');
-            $table->enum('detection_source',['MODE_CHANGED_BROADCAST', 'SERVICE_START', 'LOCATION_UPDATE', 'LOCATION_AVAILABILITY', 'MANUAL_CAPTURE', 'APP_RESUME', 'PERIODIC_JOB', 'BOOT', 'SETUP']);
+
+            $table->enum('detection_source', [
+                'MODE_CHANGED_BROADCAST',
+                'SERVICE_START',
+                'LOCATION_UPDATE',
+                'LOCATION_AVAILABILITY',
+                'MANUAL_CAPTURE',
+                'APP_RESUME',
+                'PERIODIC_JOB',
+                'BOOT',
+                'SETUP',
+            ]);
+
             $table->date('day');
             $table->dateTime('received_at');
-            $table->foreign('device_id', 'fk_lse_device')->references('id')->on('devices')->onDelete('cascade');
-            $table->foreign('user_id', 'fk_lse_user')->references('id')->on('users')->onDelete('cascade');
+
             $table->index(['user_id', 'day'], 'idx_lse_user_day');
             $table->index('event_type', 'idx_lse_type');
+
             $table->timestamps();
         });
     }

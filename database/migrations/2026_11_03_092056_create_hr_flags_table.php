@@ -14,14 +14,22 @@ return new class extends Migration
         Schema::create('hr_flags', function (Blueprint $table) {
             $table->id();
 
-            $table->bigInteger('user_id', 36);
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
             $table->string('period_month', 7);
+
             $table->integer('flagged_days_count');
+
             $table->integer('threshold_days')->default(10);
+
             $table->decimal('threshold_percentage', 5, 2)->default(50.00);
+
             $table->string('status', 20)->default('pending');
-            $table->foreign('user_id', 'fk_hr_user')->references('id')->on('users')->onDelete('cascade');
+
             $table->unique(['user_id', 'period_month'], 'uq_user_month');
+
             $table->timestamps();
         });
     }

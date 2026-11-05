@@ -22,7 +22,8 @@ return new class extends Migration
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
-            $table->index('user_id', 'idx_devices_user'); $table->timestamps();
+            $table->index('user_id', 'idx_devices_user');
+            $table->timestamps();
         });
     }
 
