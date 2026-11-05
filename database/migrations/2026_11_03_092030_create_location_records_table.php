@@ -26,7 +26,9 @@ return new class extends Migration
             $table->string('source');
             $table->date('day');
             $table->dateTime('received_at');
-            $table->foreign('device_id', 'fk_lr_device')->references('id')->on('devices')->onDelete('cascade');
+            $table->foreignId('device_id')
+                ->constrained('devices')
+                ->cascadeOnDelete();
             $table->foreign('user_id', 'fk_lr_user')->references('id')->on('users')->onDelete('cascade');
             $table->index(['user_id', 'day'], 'idx_lr_user_day');$table->timestamps();
         });
