@@ -14,10 +14,14 @@ return new class extends Migration
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
             $table->string('device_uuid')->unique();
-            $table->bigInteger('user_id');
             $table->dateTime('registered_at');
             $table->dateTime('last_seen_at');
-            $table->foreign('user_id', 'fk_devices_user')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+
+            $table->foreign('user_id', 'fk_devices_user')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
             $table->index('user_id', 'idx_devices_user'); $table->timestamps();
         });
     }
