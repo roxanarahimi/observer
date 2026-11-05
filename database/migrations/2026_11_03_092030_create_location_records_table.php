@@ -13,24 +13,35 @@ return new class extends Migration
     {
         Schema::create('location_records', function (Blueprint $table) {
             $table->id();
+
             $table->string('client_uuid');
-            $table->bigInteger('device_id');
-            $table->bigInteger('user_id');
-            $table->double('latitude');
-            $table->double('longitude');
-            $table->bigInteger('timestamp');
-            $table->bigInteger('elapsed_realtime');
-            $table->float('accuracy');
-            $table->float('speed');
-            $table->boolean('is_mock')->default(0);
-            $table->string('source');
-            $table->date('day');
-            $table->dateTime('received_at');
+
             $table->foreignId('device_id')
                 ->constrained('devices')
                 ->cascadeOnDelete();
-            $table->foreign('user_id', 'fk_lr_user')->references('id')->on('users')->onDelete('cascade');
-            $table->index(['user_id', 'day'], 'idx_lr_user_day');$table->timestamps();
+
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
+            $table->double('latitude');
+            $table->double('longitude');
+
+            $table->bigInteger('timestamp');
+            $table->bigInteger('elapsed_realtime');
+
+            $table->float('accuracy');
+            $table->float('speed');
+
+            $table->boolean('is_mock')->default(0);
+
+            $table->string('source');
+            $table->date('day');
+            $table->dateTime('received_at');
+
+            $table->index(['user_id', 'day'], 'idx_lr_user_day');
+
+            $table->timestamps();
         });
     }
 
