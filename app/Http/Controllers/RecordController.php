@@ -16,39 +16,41 @@ class RecordController extends Controller
     {
         try {
             $info = [];
-            switch ($request['type']) {
-                case 'User':
-                {
-                    $info = User::create($request->all());
-                    break;
-                }
-                case 'LocationRecord':
-                {
-                    $info = LocationRecord::create($request->all());
-                    break;
-                }
-                case 'LocationStatusEvent':
-                {
-                    $info = LocationStatusEvent::create($request->all());
-                    break;
-                }
-                case 'Device':
-                {
-                    $info = Device::create($request->all());
-                    break;
-                }
-                case 'DailySummary':
-                {
-                    $info = DailySummary::create($request->all());
-                    break;
-                }
-                case 'HrFlag':
-                {
-                    $info = HrFlag::create($request->all());
-                    break;
-                }
+            foreach($request['data']as $item) {
+                switch ($request['type']) {
+                    case 'User':
+                    {
+                        $info[] = User::create($item);
+                        break;
+                    }
+                    case 'LocationRecord':
+                    {
+                        $info[] = LocationRecord::create($item);
+                        break;
+                    }
+                    case 'LocationStatusEvent':
+                    {
+                        $info[] = LocationStatusEvent::create($item);
+                        break;
+                    }
+                    case 'Device':
+                    {
+                        $info[] = Device::create($item);
+                        break;
+                    }
+                    case 'DailySummary':
+                    {
+                        $info[] = DailySummary::create($item);
+                        break;
+                    }
+                    case 'HrFlag':
+                    {
+                        $info[] = HrFlag::create($item);
+                        break;
+                    }
 
 
+                }
             }
             return response(['ok'=> true,'data'=>$info], 201);
         } catch (\Exception $exception) {
