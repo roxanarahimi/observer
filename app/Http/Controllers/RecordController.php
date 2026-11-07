@@ -50,7 +50,7 @@ class RecordController extends Controller
 
 
             }
-            return response($info, 201);
+            return response(['ok'=> true,'data'=>$info], 201);
         } catch (\Exception $exception) {
             return $exception;
 
@@ -94,7 +94,7 @@ class RecordController extends Controller
                     break;
                 }
             }
-            return response($info, 200);
+            return response(['ok'=> true,'data'=>$info], 200);
         } catch (\Exception $exception) {
             return $exception;
 
@@ -137,7 +137,7 @@ class RecordController extends Controller
                     break;
                 }
             }
-            return response($info, 200);
+            return response(['ok'=> true,'data'=>$info], 200);
         } catch (\Exception $exception) {
             return $exception;
 
