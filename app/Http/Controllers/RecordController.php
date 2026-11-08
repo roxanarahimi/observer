@@ -15,8 +15,8 @@ class RecordController extends Controller
     public function store(Request $request)
     {
         try {
-            $d = json_encode($request['data']);
-            $x = explode(',' ,$d);
+            $x = explode(',' ,$request['data']);
+            $d = json_encode($x);
             return [$d,$x];
             $info = [];
             foreach($d as $item) {
