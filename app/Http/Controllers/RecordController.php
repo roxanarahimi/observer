@@ -20,7 +20,7 @@ class RecordController extends Controller
             foreach($x as $item){
                 $t[] = json_decode($item,true);
             }
-            return $t[0];
+            return (array)$t[0];
             $info = [];
             foreach($d as $item) {
                 switch ($request['type']) {
