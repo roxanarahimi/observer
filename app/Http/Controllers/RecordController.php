@@ -16,10 +16,11 @@ class RecordController extends Controller
     {
         try {
             $x = explode(',' ,$request['data']);
+           $t= [];
             foreach($x as $item){
-                $item = json_encode($item,true);
+                $t[] = json_decode($item,true);
             }
-            return $x;
+            return $t;
             $info = [];
             foreach($d as $item) {
                 switch ($request['type']) {
