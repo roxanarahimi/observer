@@ -18,7 +18,7 @@ class RecordController extends Controller
             $x = explode(',' ,$request['data']);
            $t= [];
             foreach($x as $item){
-                $t[] = json_decode($item,true);
+                $t[] = json_decode(json_decode($item,true),true);
             }
             return $t;
             $info = [];
