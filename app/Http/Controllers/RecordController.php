@@ -15,7 +15,7 @@ class RecordController extends Controller
     public function store(Request $request)
     {
         try {
-            $d = json_decode($request['data'],true);
+            $d = json_encode($request['data']);
             $info = [];
             foreach($d as $item) {
                 switch ($request['type']) {
