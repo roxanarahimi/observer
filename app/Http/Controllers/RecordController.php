@@ -226,13 +226,27 @@ class RecordController extends Controller
      * Insert a row, or update it in place if a row with the same
      * client_uuid already exists. This is what makes retries after a lost
      * response safe: the same client_uuid never creates a second row.
+     *
+     * This sets each attribute individually (forceFill) instead of mass
+     * assignment (create()/updateOrCreate() with a raw array). Laravel
+     * blocks mass assignment unless the model declares every one of these
+     * columns in $fillable (or sets $guarded = []) — that was the actual
+     * cause of the HTTP 500 on LocationRecord/LocationStatusEvent/
+     * DailySummary. forceFill bypasses that guard entirely, so this works
+     * regardless of what $fillable/$guarded the models declare, with no
+     * need to inspect or change the model files.
      */
     private function upsertByClientUuid(string $modelClass, array $item, string $clientUuid)
     {
-        $row = $modelClass::updateOrCreate(
-            ['client_uuid' => $clientUuid],
-            $item
-        );
+        /** @var \Illuminate\Database\Eloquent\Model $row */
+        $row = $modelClass::where('client_uuid', $clientUuid)->first();
+
+        if (!$row) {
+            $row = new $modelClass();
+        }
+
+        $row->forceFill($item);
+        $row->save();
 
         if (isset($item['device_id'])) {
             Device::where('id', $item['device_id'])->update(['last_seen_at' => now()]);
