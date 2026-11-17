@@ -245,6 +245,16 @@ class RecordController extends Controller
             $row = new $modelClass();
         }
 
+        // received_at is NOT NULL with no default on location_records,
+        // location_status_events, and daily_summary. The app never sends
+        // this field (it is a server-side "when we got it" timestamp, not
+        // something the client knows), so it must be set here explicitly
+        // on every insert, or the save() below fails with a NOT NULL
+        // violation — this was the actual cause of the HTTP 500.
+        if (!isset($item['received_at'])) {
+            $item['received_at'] = now()->toDateTimeString();
+        }
+
         $row->forceFill($item);
         $row->save();
 
